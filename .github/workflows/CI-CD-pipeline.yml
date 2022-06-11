@@ -63,7 +63,7 @@ jobs:
         tags: ykbhlvck/husqvarna_isdoc:latest
   
   deploy:
-    name: deploy on VM
+    name: Deploy on VM
     needs: build-and-push-to-docker
     runs-on: ubuntu-latest
     permissions:
