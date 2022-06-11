@@ -37,6 +37,7 @@ jobs:
     
   build-and-push-to-docker:
     name: Build & Push Docker Hub
+    needs: test
     runs-on: ubuntu-latest
     
     steps:
