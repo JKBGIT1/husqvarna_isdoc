@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: test application
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
       with:
@@ -23,17 +24,24 @@ jobs:
     - run: python -m pytest .
     
   build-and-push-to-docker:
-    name: build and push to DockerHub
+    name: build and push to Docker Hub
     runs-on: ubuntu-latest
     
     steps:
-    - uses: mr-smithers-excellent/docker-build-push@v5
-      with:
-        image: ykbhlvck/husqvarna_isdoc
-        tags: latest
-        registry: docker.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v2
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+#       -
+#         name: Build and push
+#         uses: docker/build-push-action@v3
+#         with:
+#           push: true
+#           tags: ykbhlvck/husqvarna_isdoc:latest
   
 #   deploy:
 #     name: deploy on VM
