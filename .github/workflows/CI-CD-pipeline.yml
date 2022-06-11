@@ -21,14 +21,35 @@ jobs:
     - run: source venv/bin/activate
     - run: pip install -r requirements.txt
     - run: python -m pytest .
+    
+  build-and-push-to-docker:
+    name: build and push to DockerHub
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: mr-smithers-excellent/docker-build-push@v5
+      with:
+        image: ykbhlvck/husqvarna_isdoc
+        tags: latest
+        registry: docker.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
   
-#   build:
-
+#   deploy:
+#     name: deploy on VM
 #     runs-on: ubuntu-latest
-
+#     permissions:
+#       contents: read
+      
 #     steps:
-#     - uses: actions/checkout@v3
-#     - name: Build the Docker image
-#       run: docker build . --file Dockerfile --tag ykbhlvck/husqvarna_isdoc:latest
+#     - name: Executing remote ssh docker deploy
+#       uses: appleboy/ssh-action@master
+#       with:
+#         host: ${{ secrets.DEPLOY_IP }}
+#         username: ${{ secrets.DEPLOY_USERNAME }}
+#         password: ${{ secrets.DEPLOY_PASSWORD }}
+#         script: |
+#           cd ${{ secrets.PROJECT_PATH }}
+#           docker-compose pull && docker-compose up --detach && docker system prune -f
       
   
