@@ -1,14 +1,7 @@
-import os
-from flask import Flask
-from dotenv import load_dotenv
-from project.init import create_app
-
-load_dotenv()
-
-PORT = int(os.getenv('PORT') or '5000')
-DEV = bool(os.getenv('DEV') or True)
+from project import create_app
+import settings
 
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(port=PORT, debug=DEV)
+    app.run(port=settings.FLASK_PORT, debug=settings.DEV)

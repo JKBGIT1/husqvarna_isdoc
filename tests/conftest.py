@@ -1,5 +1,5 @@
 import pytest
-from project.init import create_app
+from project import create_app
 
 # source: https://testdriven.io/blog/flask-pytest/
 @pytest.fixture(scope='module')
