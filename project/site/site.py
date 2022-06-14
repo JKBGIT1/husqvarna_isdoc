@@ -18,4 +18,21 @@ def index():
 
 @site.route('/home', methods=['GET', 'POST'])
 def home():
+    if request.method == 'POST':
+        pdf_file = request.files["pdf_file"]
+
+        if not pdf_file or not pdf_file.filename:
+            # TODO: handle not submitted
+            abort(404)
+
+        pdf_file_name = pdf_file.filename
+
+        pdf_file.save(pdf_file_name)
+
+        # TODO: create isdoc
+
+        # TODO: remove uploaded pdf
+
+        # TODO: allow isdoc download
+
     return render_template('home.html'), 200

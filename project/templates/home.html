@@ -5,5 +5,33 @@
 {% endblock %} -->
 
 {% block content %}
-    <h1>NIC</h1>
+    <div class="row justify-content-center align-items-center">
+        <div class="col-10 col-md-8 col-lg-4 text-start gap-3">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'error' %}
+                    <div class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
+                        <span class="fs-5">{{ message }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form action="" method="POST" enctype="multipart/form-data">
+                <div class="form-group mb-4 text-left input-group-lg">
+                    <label for="pdf_file" class="form-label fs-5">Nahrajte PDF súbor</label>
+                    <input 
+                        class="form-control form-control-lg"
+                        name="pdf_file" required='required'
+                        id="pdf_file" type="file"
+                        accept=".pdf, .PDF"
+                        placeholder="Súbor ešte nebol nahratý"
+                    >
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Nahrať súbor</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}
