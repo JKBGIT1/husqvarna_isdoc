@@ -10,7 +10,7 @@ def create_app():
     from project.login_manager import login_manager
     login_manager.init_app(app)
 
-    from project.site import site
+    from project.blueprints.site import site
     app.register_blueprint(site)
     
     return app
