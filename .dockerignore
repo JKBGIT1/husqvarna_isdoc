@@ -3,6 +3,6 @@ __pycache__
 .pytest_cache/
 README.md
 /tests
-.env
+*.env
 /nginx
 docker-compose.yaml

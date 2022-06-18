@@ -1,12 +1,16 @@
 from flask import Blueprint, render_template, request, flash, redirect, abort
-from flask_login import login_required
+from flask_login import login_required, login_user, current_user
+from project.models import User
 import project.db
 
 site = Blueprint('site', __name__)
 
 @site.route('/', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
+    if current_user.is_authenticated and request.method == 'GET':   # type: ignore -> Cannot access member "is_authenticated" for type "LocalProxy"
+        return redirect('/home')
+
+    elif request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
@@ -15,6 +19,9 @@ def login():
             flash('Vyplnte prihlásovacia údaje.', category='error')
             return render_template('login.html'), 400
         else:
+            # project.db.mongo -> MongoClient instance
+            # project.db.mongo.db -> database
+            # project.db.mongo.db.user -> collection
             user = project.db.mongo.db.users.find_one({ "username": username, "password": password })
 
             if not user:
@@ -22,11 +29,16 @@ def login():
                 flash('Nesprávne prihlasovacie údaje.', category='error')
                 return render_template('login.html'), 400
 
+            login_user(
+                User(str(user['_id']))  
+            )
+
             return redirect('/home')
 
     return render_template('login.html'), 200
 
 @site.route('/home', methods=['GET', 'POST'])
+@login_required
 def home():
     if request.method == 'POST':
         pdf_file = request.files["pdf_file"]

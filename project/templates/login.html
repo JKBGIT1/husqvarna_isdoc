@@ -16,6 +16,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% endif %}
+
+                    {% if category == 'info' %}
+                    <div class="alert alert alert-info d-flex align-items-center justify-content-between" role="alert">
+                        <span class="fs-5">{{ message }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
             {% endwith %}
