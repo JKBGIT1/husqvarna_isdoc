@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, abort
 from flask_login import login_required, login_user, current_user
 from project.models import User
-import project.db
+from project.database import mongo
 
 site = Blueprint('site', __name__)
 
@@ -19,10 +19,8 @@ def login():
             flash('Vyplnte prihlásovacia údaje.', category='error')
             return render_template('login.html'), 400
         else:
-            # project.db.mongo -> MongoClient instance
-            # project.db.mongo.db -> database
-            # project.db.mongo.db.user -> collection
-            user = project.db.mongo.db.users.find_one({ "username": username, "password": password })
+            # db is database and users is collection
+            user = mongo.db.users.find_one({ "username": username, "password": password })
 
             if not user:
                 # not valid credentials
