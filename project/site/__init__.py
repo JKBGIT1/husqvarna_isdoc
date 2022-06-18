@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, flash, redirect, abort
 from flask_login import login_required
-from project.db import init_db
+import project.db
 
 site = Blueprint('site', __name__)
-db = init_db()
 
 @site.route('/', methods=['GET', 'POST'])
 def login():
@@ -16,7 +15,7 @@ def login():
             flash('Vyplnte prihlásovacia údaje.', category='error')
             return render_template('login.html'), 400
         else:
-            user = db.users.find_one({ "username": username, "password": password })
+            user = project.db.mongo.db.users.find_one({ "username": username, "password": password })
 
             if not user:
                 # not valid credentials

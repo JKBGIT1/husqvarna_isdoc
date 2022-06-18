@@ -1,7 +1,5 @@
 import settings
 from flask import Flask
-from pymongo.mongo_client import MongoClient
-from project.site import site
 
 def create_app():
     # create and configure the app
@@ -9,6 +7,7 @@ def create_app():
 
     app.config['SECRET_KEY'] = settings.SECRET_KEY
 
+    from project.site import site
     app.register_blueprint(site)
     
     return app

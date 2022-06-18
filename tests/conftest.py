@@ -1,13 +1,18 @@
 import pytest
+import mongomock
 from project import create_app
+import project.db
 
-# source: https://testdriven.io/blog/flask-pytest/
-@pytest.fixture(scope='module')
-def test_client():
-    flask_app = create_app()
 
-    # Create a test client using the Flask application configured for testing
-    with flask_app.test_client() as testing_client:
-        # Establish an application context
-        with flask_app.app_context():
-            yield testing_client # execution is being passed to the test functions.
+@pytest.fixture(autouse=True)
+def test_client(monkeypatch):
+    app = create_app()
+    app.config['TESTING'] = True
+
+    mongo_mock = mongomock.MongoClient()
+    monkeypatch.setattr(project.db, 'mongo', mongo_mock)
+
+    # login is tested based on this credentials
+    project.db.mongo.db.users.insert_one({ "username": "username", "password": "password" })
+
+    yield app.test_client()
