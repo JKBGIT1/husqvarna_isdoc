@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, abort
-from flask_login import login_required, login_user, current_user
+from flask_login import login_required, login_user, current_user, logout_user
 from project.models import User
 from project.database import mongo
 
@@ -57,4 +57,8 @@ def home():
 
     return render_template('home.html'), 200
 
-
+@site.route('/logout', methods=['GET'])
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
