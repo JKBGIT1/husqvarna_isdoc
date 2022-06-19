@@ -10,8 +10,8 @@ def test_login_form(test_client):
 
 def test_sunny_day_submit(test_client):
     data = {
-        "username": "username",
-        "password": "password"
+        'username': 'username',
+        'password': 'password'
     }
 
     response = test_client.post('/', data=data, follow_redirects=True)
@@ -22,8 +22,8 @@ def test_sunny_day_submit(test_client):
 
 def test_not_filled_user_data(test_client):
     data = {
-        "username": "",
-        "password": ""
+        'username': '',
+        'password': ''
     }
 
     response = test_client.post('/', data=data)
@@ -33,8 +33,8 @@ def test_not_filled_user_data(test_client):
 
 def test_not_filled_username(test_client):
     data = {
-        "username": "",
-        "password": "password"
+        'username': '',
+        'password': 'password'
     }
 
     response = test_client.post('/', data=data)
@@ -44,11 +44,44 @@ def test_not_filled_username(test_client):
 
 def test_not_filled_password(test_client):
     data = {
-        "username": "username",
-        "password": ""
+        'username': 'username',
+        'password': ''
     }
 
     response = test_client.post('/', data=data)
 
     assert response.status_code == 400
     assert 'Vyplnte prihlásovacia údaje.' in response.text
+
+def test_wrong_login_password(test_client):
+    data = {
+        'username': 'username',
+        'password': 'test'
+    }
+
+    response = test_client.post('/', data=data)
+
+    assert response.status_code == 400
+    assert 'Nesprávne prihlasovacie údaje.' in response.text
+
+def test_wrong_login_username(test_client):
+    data = {
+        'username': 'test',
+        'password': 'password'
+    }
+
+    response = test_client.post('/', data=data)
+
+    assert response.status_code == 400
+    assert 'Nesprávne prihlasovacie údaje.' in response.text
+
+def test_wrong_login_credentials(test_client):
+    data = {
+        'username': 'test',
+        'password': 'test'
+    }
+
+    response = test_client.post('/', data=data)
+
+    assert response.status_code == 400
+    assert 'Nesprávne prihlasovacie údaje.' in response.text
