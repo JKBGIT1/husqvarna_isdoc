@@ -18,7 +18,18 @@
 </head>
 <body>
     <header>
-
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <div class="container-fluid">
+              <a class="navbar-brand fs-4" href="/">PDF na isdoc</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                {% block navbar_items %}
+                {% endblock %}
+              </div>
+            </div>
+        </nav>
     </header>
     <main class="center-screen">
         <div class="container">

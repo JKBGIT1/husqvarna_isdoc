@@ -1,5 +1,5 @@
-import settings
 from flask import Flask
+import settings
 
 def create_app():
     # create and configure the app

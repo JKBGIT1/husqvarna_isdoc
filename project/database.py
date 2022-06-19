@@ -1,5 +1,5 @@
-import settings
 from pymongo.mongo_client import MongoClient
+import settings
 
 mongo = MongoClient(
     settings.MONGO_URL,
