@@ -1,0 +1,7 @@
+ORDER_NUM_REG = r'\d{3}\s\d{2}\s\d{2}-\d{2}'
+NUM_OF_PIECES_REG = r'(\b\d+\s*ks\b)'
+ITEM_PRICE_REG = r'(\b\d+(,|\.)\d*)\b'
+TOTAL_PRICE_REG = r'\b\d+(,|\.)\d*\b$'
+RECYCLE_FEE_REG = r'\b\d+.\d*$'
+INVOICE_NUM_REG = r'\b(\d+) STR.:'
+INVOICE_DATE_REG = r'\bDátum vystavenia\b\s*:\s*(\d+-\d+-\d+)$'

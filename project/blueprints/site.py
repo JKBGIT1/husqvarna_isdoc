@@ -7,10 +7,13 @@ site = Blueprint('site', __name__)
 
 @site.route('/', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated and request.method == 'GET':   # type: ignore -> Cannot access member "is_authenticated" for type "LocalProxy"
+    ''' login for authenticated and not authenticated user '''
+
+    # Cannot access member "is_authenticated" for type "LocalProxy"
+    if current_user.is_authenticated and request.method == 'GET': # type: ignore 
         return redirect('/home')
 
-    elif request.method == 'POST':
+    if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
@@ -18,32 +21,34 @@ def login():
         if not password or not username or username == '' or password == '':
             flash('Vyplnte prihlásovacia údaje.', category='error')
             return render_template('login.html'), 400
-        else:
-            # db is database and users is collection
-            user = mongo.db.users.find_one({ "username": username, "password": password })
 
-            if not user:
-                # not valid credentials
-                flash('Nesprávne prihlasovacie údaje.', category='error')
-                return render_template('login.html'), 400
+        # db is database and users is collection
+        user = mongo.db.users.find_one({ "username": username, "password": password })
 
-            login_user(
-                User(str(user['_id']))  
-            )
+        if not user:
+            # not valid credentials
+            flash('Nesprávne prihlasovacie údaje.', category='error')
+            return render_template('login.html'), 400
 
-            return redirect('/home')
+        login_user(
+            User(str(user['_id']))  
+        )
+
+        return redirect('/home')
 
     return render_template('login.html'), 200
 
 @site.route('/home', methods=['GET', 'POST'])
 @login_required
 def home():
+    ''' display home page to user or generate isdoc file from submitted PDF and allow him/her to download it '''
+
     if request.method == 'POST':
         pdf_file = request.files["pdf_file"]
 
         if not pdf_file or not pdf_file.filename:
-            # TODO: handle not submitted
-            abort(404)
+            flash('PDF súbor nebol nahratý. Použite Browse tlačidlo.', category='error')
+            return render_template('home.html'), 400
 
         pdf_file_name = pdf_file.filename
 
