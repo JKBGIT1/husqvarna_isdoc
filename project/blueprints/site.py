@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request, flash, redirect, abort
+import os
+from flask import Blueprint, render_template, request, flash, redirect
 from flask_login import login_required, login_user, current_user, logout_user
 from project.models import User
 from project.database import mongo
+from project.parser import pdf_parser
 
 site = Blueprint('site', __name__)
 
@@ -55,10 +57,12 @@ def home():
         pdf_file.save(pdf_file_name)
 
         # TODO: create isdoc
+        # pdf_parser.create_is_doc()
 
-        # TODO: remove uploaded pdf
+        os.remove(pdf_file_name)
 
         # TODO: allow isdoc download
+        render_template('download.html'), 200
 
     return render_template('home.html'), 200
 

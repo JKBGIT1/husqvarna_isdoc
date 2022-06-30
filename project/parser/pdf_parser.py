@@ -4,7 +4,7 @@ import pdfplumber
 from lxml import etree
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from regexes import INVOICE_NUM_REG, INVOICE_DATE_REG, \
+from project.parser.regexes import INVOICE_NUM_REG, INVOICE_DATE_REG, \
     ORDER_NUM_REG, NUM_OF_PIECES_REG, TOTAL_PRICE_REG, RECYCLE_FEE_REG
 
 
