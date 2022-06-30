@@ -61,8 +61,7 @@ def home():
 
         os.remove(pdf_file_name)
 
-        # TODO: allow isdoc download
-        render_template('download.html'), 200
+        return render_template('download.html'), 200
 
     return render_template('home.html'), 200
 
