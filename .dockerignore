@@ -6,3 +6,4 @@ README.md
 *.env
 /nginx
 docker-compose.yaml
+sample.isdoc

@@ -1,8 +1,8 @@
 import re
 import uuid
+from datetime import datetime
 import pdfplumber
 from lxml import etree
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from project.parser.regexes import INVOICE_NUM_REG, INVOICE_DATE_REG, \
     ORDER_NUM_REG, NUM_OF_PIECES_REG, TOTAL_PRICE_REG, RECYCLE_FEE_REG
@@ -12,7 +12,7 @@ class InvoiceClass:
     def __init__(self, file_name):
         self.file_name = file_name
         self.uuid = str(uuid.uuid4()).upper()
-        self.invoice_number = None
+        self.invoice_number = ""
         self.orders = []
         self.date = None # type will by string in format '%d-%m-%Y'
         self.invoice_total_price = None
@@ -29,13 +29,14 @@ class InvoiceClass:
         self.date = new_date_format_string
 
     def expiration_date(self):
-        date_time_obj = datetime.strptime(self.date, '%Y-%m-%d')
+        if self.date:
+            date_time_obj = datetime.strptime(self.date, '%Y-%m-%d')
 
-        expiration_date_datetime = date_time_obj + relativedelta(years=1)
+            expiration_date_datetime = date_time_obj + relativedelta(years=1)
 
-        expiration_date_string = expiration_date_datetime.strftime('%Y-%m-%d')
+            expiration_date_string = expiration_date_datetime.strftime('%Y-%m-%d')
 
-        return expiration_date_string
+            return expiration_date_string
 
     def isdoc_name(self):
         isdoc_name_split = self.file_name.split('/')
@@ -62,7 +63,9 @@ class Order:
         self.total_price_without_dph = total_price_without_dph
 
     def quantity(self):
-        return str(re.search(r'\d+', self.num_of_pieces).group())
+        search_result = re.search(r'\d+', self.num_of_pieces)
+        if search_result:
+            return str(search_result.group())
 
     def data_ready(self):
         return self.order_num != '' and self.product_name != '' and self.num_of_pieces != '' \
@@ -70,15 +73,18 @@ class Order:
 
 
 def calculate_item_price_without_dph(num_of_pieces, total_price_without_dph):
-    number = int(re.search(r'\d+', num_of_pieces).group())
+    search_result = re.search(r'\d+', num_of_pieces)
 
-    total_price_num = float(total_price_without_dph.replace(',', '.'))
+    if search_result:
+        number = int(search_result.group())
 
-    item_price_without_dph = total_price_num / number
+        total_price_num = float(total_price_without_dph.replace(',', '.'))
 
-    item_price_without_dph = round(item_price_without_dph, 2)
+        item_price_without_dph = total_price_num / number
 
-    return item_price_without_dph
+        item_price_without_dph = round(item_price_without_dph, 2)
+
+        return item_price_without_dph
 
 
 def parse_pdf(file_name: str) -> InvoiceClass:
@@ -105,7 +111,7 @@ def parse_pdf(file_name: str) -> InvoiceClass:
                 invoice_num_res = re.search(INVOICE_NUM_REG, line)
 
                 # invoice number was found and it isn't set yet
-                if invoice_num_res and invoice.invoice_number is None:
+                if invoice_num_res and invoice.invoice_number == "":
                     invoice_num = invoice_num_res.groups()[0]
 
                     invoice.invoice_number = invoice_num
@@ -173,13 +179,12 @@ def parse_pdf(file_name: str) -> InvoiceClass:
 
 def create_is_doc(invoice: InvoiceClass) -> list[str]:
     # first load sample of this isdoc
-    tree = etree.parse('husqvarna_vzor.isdoc')
+    tree = etree.parse('sample.isdoc')  # type: ignore
 
     # create isdoc document from extracted invoice
     # make deepcopy of isdoc sample
     tree_copy = tree.__deepcopy__(tree)
 
-    # get root element of xml file
     Invoice = tree_copy.getroot()
 
     # change invoice number
@@ -266,10 +271,6 @@ def create_is_doc(invoice: InvoiceClass) -> list[str]:
         BuyersItemIdentification = Invoice_Item.xpath('BuyersItemIdentification')[0]
         BuyersItemIdentification.xpath('ID')[0].text = curr_order_num
 
-        StoreBatches = Invoice_Item.xpath('StoreBatches')[0]
-        Invoice_Item.remove(StoreBatches)
-
-        # add new InvoiceLine to InvoiceLines
         InvoiceLines.append(InvoiceLine_Copy)
 
     # changing other values for invoice
