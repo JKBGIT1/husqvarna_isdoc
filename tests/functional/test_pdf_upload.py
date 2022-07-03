@@ -1,18 +1,25 @@
 import io
 
-def test_file_not_uloaded(test_client):
-    # firstly login user
+from tests.conftest import test_client
+
+def login_user(test_client):
     test_client.post('/', data={"username": "username", "password": "password"}, follow_redirects=True)
 
+    return test_client
+
+def test_file_not_uloaded(test_client):
+    test_client = login_user(test_client)
+
     response = test_client.post('/home')
+
+    print(response.text)
 
     assert response.status_code == 400
     assert 'PDF súbor nebol nahratý. Použite Browse tlačidlo.' in response.text
 
 
 def test_empty_form_uploaded(test_client):
-    # firstly login user
-    test_client.post('/', data={"username": "username", "password": "password"}, follow_redirects=True)
+    test_client = login_user(test_client)
 
     data = {
         "pdf_file": (io.BytesIO(b''), '')
@@ -25,8 +32,7 @@ def test_empty_form_uploaded(test_client):
 
 
 def test_not_husqvarna_pdf(test_client):
-    # firstly login user
-    test_client.post('/', data={"username": "username", "password": "password"}, follow_redirects=True)
+    test_client = login_user(test_client)
 
     data = {
         "pdf_file": (io.BytesIO(b'test data'), 'test.pdf')
