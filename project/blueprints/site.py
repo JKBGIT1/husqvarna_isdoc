@@ -3,7 +3,7 @@ import os
 from flask import Blueprint, render_template, request, flash, redirect, send_file
 from flask_login import login_required, login_user, current_user, logout_user
 from project.models import User
-from project.database import mongo
+import project.database
 from project.parser import pdf_parser
 
 site = Blueprint('site', __name__)
@@ -24,7 +24,8 @@ def login():
             return render_template('login.html'), 400
 
         # db is database and users is collection
-        user = mongo.db.users.find_one({ "username": username, "password": password })
+        user = project.database.mongo.db.users.find_one(
+            { "username": username, "password": password })
 
         if not user:
             # not valid credentials
@@ -51,7 +52,11 @@ def logout():
 @login_required
 def home():
     if request.method == 'POST':
-        pdf_file = request.files["pdf_file"]
+        if 'pdf_file' not in request.files:
+           flash('PDF súbor nebol nahratý. Použite Browse tlačidlo.', category='error')
+           return render_template('home.html'), 400
+
+        pdf_file = request.files['pdf_file']
 
         if not pdf_file or not pdf_file.filename:
             flash('PDF súbor nebol nahratý. Použite Browse tlačidlo.', category='error')
@@ -62,6 +67,7 @@ def home():
         pdf_file.save(pdf_file_name)
 
         try:
+            # TODO: create tests after getting permission for uploading sample pdf and isdoc on github
             invoice_object = pdf_parser.parse_pdf(file_name=pdf_file_name)
 
             os.remove(pdf_file_name)

@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from project.parser.regexes import INVOICE_NUM_REG, INVOICE_DATE_REG, \
     ORDER_NUM_REG, NUM_OF_PIECES_REG, TOTAL_PRICE_REG, RECYCLE_FEE_REG
 
-
+# TODO: refactor
 class InvoiceClass:
     def __init__(self, file_name):
         self.file_name = file_name
