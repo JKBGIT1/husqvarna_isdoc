@@ -1,7 +1,4 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 FLASK_PORT = int(os.getenv('PORT') or '5000')
 DEV = bool(os.getenv('DEV') or True)
