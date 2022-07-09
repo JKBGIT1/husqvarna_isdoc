@@ -8,6 +8,10 @@ def test_client(monkeypatch):
     app = create_app()
     app.config['TESTING'] = True
 
+    # this allows using url_for in tests
+    context = app.test_request_context()
+    context.push()
+
     mongo_mock = mongomock.MongoClient()
     monkeypatch.setattr(project.database, 'mongo', mongo_mock)
 
