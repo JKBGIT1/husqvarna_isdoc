@@ -7,5 +7,5 @@ URL_PREFIX = str(os.getenv('URL_PREFIX') or '/husqvarna_isdoc')
 
 MONGO_URL = str(os.getenv('MONGO_URL') or 'localhost')
 MONGO_PORT = str(os.getenv('MONGO_PORT') or 27017)
-MONGO_USERNAME = str(os.getenv('MONGO_USERNAME') or 'root')
-MONGO_PASSWORD = str(os.getenv('MONGO_PASSWORD') or 'password')
+MONGO_USERNAME = str(os.getenv('MONGO_INITDB_ROOT_USERNAME') or 'root')
+MONGO_PASSWORD = str(os.getenv('MONGO_INITDB_ROOT_PASSWORD') or 'password')
