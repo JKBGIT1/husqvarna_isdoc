@@ -1,7 +1,8 @@
 import re
+from flask import url_for
 
 def test_login_form(test_client):
-    response = test_client.get('/')
+    response = test_client.get(url_for('site.login'))
     assert response.status_code == 200
 
     page_content = response.text
@@ -16,11 +17,11 @@ def test_sunny_day_login(test_client):
         'password': 'password'
     }
 
-    response = test_client.post('/', data=data, follow_redirects=True)
+    response = test_client.post(url_for('site.login'), data=data, follow_redirects=True)
 
     assert len(response.history) == 1 # there has to be one redirect
     assert response.status_code == 200
-    assert response.request.path == '/home'
+    assert '/home' in response.request.path
     assert re.search(r'<a.*>Odhlásiť sa</a>', response.text)
 
 def test_not_filled_user_data(test_client):
@@ -29,7 +30,7 @@ def test_not_filled_user_data(test_client):
         'password': ''
     }
 
-    response = test_client.post('/', data=data)
+    response = test_client.post(url_for('site.login'), data=data)
 
     assert response.status_code == 400
     assert 'Vyplnte prihlásovacia údaje.' in response.text
@@ -41,7 +42,7 @@ def test_not_filled_username(test_client):
         'password': 'password'
     }
 
-    response = test_client.post('/', data=data)
+    response = test_client.post(url_for('site.login'), data=data)
 
     assert response.status_code == 400
     assert 'Vyplnte prihlásovacia údaje.' in response.text
@@ -53,7 +54,7 @@ def test_not_filled_password(test_client):
         'password': ''
     }
 
-    response = test_client.post('/', data=data)
+    response = test_client.post(url_for('site.login'), data=data)
 
     assert response.status_code == 400
     assert 'Vyplnte prihlásovacia údaje.' in response.text
@@ -65,7 +66,7 @@ def test_wrong_login_password(test_client):
         'password': 'test'
     }
 
-    response = test_client.post('/', data=data)
+    response = test_client.post(url_for('site.login'), data=data)
 
     assert response.status_code == 400
     assert 'Nesprávne prihlasovacie údaje.' in response.text
@@ -77,7 +78,7 @@ def test_wrong_login_username(test_client):
         'password': 'password'
     }
 
-    response = test_client.post('/', data=data)
+    response = test_client.post(url_for('site.login'), data=data)
 
     assert response.status_code == 400
     assert 'Nesprávne prihlasovacie údaje.' in response.text
@@ -89,7 +90,7 @@ def test_wrong_login_credentials(test_client):
         'password': 'test'
     }
 
-    response = test_client.post('/', data=data)
+    response = test_client.post(url_for('site.login'), data=data)
 
     assert response.status_code == 400
     assert 'Nesprávne prihlasovacie údaje.' in response.text
