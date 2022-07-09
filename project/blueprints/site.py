@@ -1,6 +1,6 @@
 import io
 import os
-from flask import Blueprint, render_template, request, flash, redirect, send_file
+from flask import Blueprint, render_template, request, flash, redirect, send_file, url_for
 from flask_login import login_required, login_user, current_user, logout_user
 from project.models import User
 import project.database
@@ -12,7 +12,7 @@ site = Blueprint('site', __name__)
 def login():
     # Cannot access member "is_authenticated" for type "LocalProxy"
     if current_user.is_authenticated and request.method == 'GET': # type: ignore 
-        return redirect('/home')
+        return redirect(url_for('site.home'))
 
     if request.method == 'POST':
         username = request.form['username']
@@ -36,7 +36,7 @@ def login():
             User(str(user['_id']))  
         )
 
-        return redirect('/home')
+        return redirect(url_for('site.home'))
 
     return render_template('login.html'), 200
 
@@ -45,7 +45,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect(url_for('site.login'))
 
 
 @site.route('/home', methods=['GET', 'POST'])
